@@ -1,23 +1,28 @@
 <script>
-// AMBIL DATA DARI LOCAL STORAGE
+// ===== INIT =====
 let data = JSON.parse(localStorage.getItem("keuangan")) || [];
 
-// SIMPAN KE STORAGE
+// ===== SIMPAN =====
 function simpan() {
     localStorage.setItem("keuangan", JSON.stringify(data));
 }
 
-// FORMAT RUPIAH
+// ===== FORMAT =====
 function formatRupiah(angka) {
-    return "Rp. " + angka.toLocaleString("id-ID");
+    return "Rp. " + (angka || 0).toLocaleString("id-ID");
 }
 
-// TAMBAH DATA
+// ===== TAMBAH =====
 function tambah() {
-    let ket = document.getElementById("ket").value;
-    let tipe = document.getElementById("tipe").value;
-    let nominal = document.getElementById("nominal").value;
-    let tanggal = document.getElementById("tanggal").value;
+    let ketEl = document.getElementById("ket");
+    let tipeEl = document.getElementById("tipe");
+    let nominalEl = document.getElementById("nominal");
+    let tanggalEl = document.getElementById("tanggal");
+
+    let ket = ketEl.value;
+    let tipe = tipeEl.value;
+    let nominal = nominalEl.value;
+    let tanggal = tanggalEl.value;
 
     if (!ket || !nominal || !tanggal) {
         alert("Lengkapi data!");
@@ -25,33 +30,35 @@ function tambah() {
     }
 
     data.push({
-        ket,
-        tipe,
+        ket: ket,
+        tipe: tipe,
         nominal: parseInt(nominal),
-        tanggal
+        tanggal: tanggal
     });
 
-    simpan(); // 🔥 penting
+    simpan();
 
     // reset input
-    ket.value = "";
-    nominal.value = "";
-    tanggal.value = "";
+    ketEl.value = "";
+    nominalEl.value = "";
+    tanggalEl.value = "";
 
     render();
 }
 
-// RENDER + FILTER
+// ===== RENDER + FILTER =====
 function render() {
     let table = document.getElementById("tableData");
+    if (!table) return; // biar aman kalau halaman belum tampil
+
     table.innerHTML = "";
 
     let totalMasuk = 0;
     let totalKeluar = 0;
 
-    let search = document.getElementById("search").value.toLowerCase();
-    let dari = document.getElementById("dari").value;
-    let sampai = document.getElementById("sampai").value;
+    let search = (document.getElementById("search")?.value || "").toLowerCase();
+    let dari = document.getElementById("dari")?.value;
+    let sampai = document.getElementById("sampai")?.value;
 
     data.forEach((d, i) => {
 
@@ -85,14 +92,14 @@ function render() {
     document.getElementById("persenKeluar").innerText = persen + "% dari pemasukan";
 }
 
-// HAPUS DATA
+// ===== HAPUS =====
 function hapus(i) {
     data.splice(i, 1);
-    simpan(); // 🔥 update storage
+    simpan();
     render();
 }
 
-// RESET SEMUA DATA (OPSIONAL)
+// ===== RESET =====
 function resetData() {
     if (confirm("Yakin hapus semua data?")) {
         localStorage.removeItem("keuangan");
@@ -101,9 +108,12 @@ function resetData() {
     }
 }
 
-// SEARCH REALTIME
-document.getElementById("search").addEventListener("keyup", render);
-
-// LOAD AWAL
-render();
+// ===== INIT EVENT =====
+document.addEventListener("DOMContentLoaded", () => {
+    let searchEl = document.getElementById("search");
+    if (searchEl) {
+        searchEl.addEventListener("keyup", render);
+    }
+    render();
+});
 </script>
