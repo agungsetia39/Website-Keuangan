@@ -16,11 +16,9 @@ body{
     color:white;
 }
 
-/* HIDE */
 .page{display:none;}
 .active{display:block;}
 
-/* LOGIN */
 .login{
     height:100vh;
     display:flex;
@@ -37,7 +35,6 @@ body{
     width:300px;
 }
 
-/* DASHBOARD */
 .container{
     max-width:1000px;
     margin:auto;
@@ -58,7 +55,6 @@ img{
     object-fit:cover;
 }
 
-/* KEUANGAN */
 .box{
     margin-bottom:20px;
     padding:15px;
@@ -116,7 +112,7 @@ th{background:rgba(255,255,255,0.2);}
 <h1>Dashboard</h1>
 
 <div class="card">
-<img id="foto" src="">
+<img id="foto" src="https://i.imgur.com/6VBx3io.png">
 <br><br>
 <input type="file" onchange="gantiFoto(event)">
 <h3>Selamat datang</h3>
@@ -180,17 +176,15 @@ th{background:rgba(255,255,255,0.2);}
 </div>
 
 <script>
-// NAVIGASI
 function showPage(id){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 }
 
-// LOGIN
 function login(){
     if(user.value==="admin" && pass.value==="123"){
         showPage('dashboardPage');
-    } else alert("Salah");
+    } else alert("Username / Password salah");
 }
 
 function logout(){
@@ -210,12 +204,19 @@ let data=[];
 function formatRupiah(a){return "Rp."+a.toLocaleString("id-ID");}
 
 function tambah(){
+    if(!ket.value || !nominal.value || !tanggal.value){
+        alert("Isi semua data!");
+        return;
+    }
+
     data.push({
         ket:ket.value,
         tipe:tipe.value,
         nominal:parseInt(nominal.value),
         tanggal:tanggal.value
     });
+
+    ket.value=""; nominal.value=""; tanggal.value="";
     render();
 }
 
@@ -223,7 +224,21 @@ function render(){
     let masuk=0, keluar=0;
     tableData.innerHTML="";
 
+    let s = search.value.toLowerCase();
+    let d1 = dari.value;
+    let d2 = sampai.value;
+
     data.forEach((d,i)=>{
+
+        let cocokSearch = d.ket.toLowerCase().includes(s);
+        let cocokTanggal = true;
+
+        if(d1 && !d2) cocokTanggal = d.tanggal >= d1;
+        else if(!d1 && d2) cocokTanggal = d.tanggal <= d2;
+        else if(d1 && d2) cocokTanggal = d.tanggal >= d1 && d.tanggal <= d2;
+
+        if(!cocokSearch || !cocokTanggal) return;
+
         if(d.tipe==="masuk") masuk+=d.nominal;
         else keluar+=d.nominal;
 
@@ -237,19 +252,18 @@ function render(){
         </tr>`;
     });
 
-    masukEl = document.getElementById("masuk");
-    keluarEl = document.getElementById("keluar");
-    saldoEl = document.getElementById("saldo");
-
-    masukEl.innerText=formatRupiah(masuk);
-    keluarEl.innerText=formatRupiah(keluar);
-    saldoEl.innerText=formatRupiah(masuk-keluar);
+    masuk.innerText=formatRupiah(masuk);
+    keluar.innerText=formatRupiah(keluar);
+    saldo.innerText=formatRupiah(masuk-keluar);
 }
 
 function hapus(i){
     data.splice(i,1);
     render();
 }
+
+// realtime search
+search.addEventListener("keyup", render);
 </script>
 
 </body>
