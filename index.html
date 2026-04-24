@@ -172,12 +172,12 @@ small {opacity:0.8;font-size:12px;}
 <!-- SUMMARY -->
 <div class="summary">
 <div class="card masuk">
-<h3>Pemasukan (Bulan Ini)</h3>
+<h3>Pemasukan</h3>
 <span id="masuk">0</span>
 </div>
 
 <div class="card keluar">
-<h3>Pengeluaran (Bulan Ini)</h3>
+<h3>Pengeluaran</h3>
 <span id="keluar">0</span><br>
 <small id="persenKeluar">0%</small>
 </div>
@@ -242,8 +242,14 @@ function render(){
     let dari = document.getElementById("dari").value;
     let sampai = document.getElementById("sampai").value;
 
-    let bulanNow = new Date().getMonth();
-    let tahunNow = new Date().getFullYear();
+    // 🔥 SINKRON BULAN DENGAN INPUT / FILTER
+    let referensiTanggal = dari 
+                        || document.getElementById("tanggal").value 
+                        || new Date().toISOString().split("T")[0];
+
+    let refDate = new Date(referensiTanggal);
+    let bulanNow = refDate.getMonth();
+    let tahunNow = refDate.getFullYear();
 
     data.forEach((d,i)=>{
 
@@ -260,7 +266,7 @@ function render(){
         let bulanData = tgl.getMonth();
         let tahunData = tgl.getFullYear();
 
-        // 🔥 HITUNG HANYA BULAN INI
+        // 🔥 HITUNG SESUAI BULAN REFERENSI
         if(bulanData === bulanNow && tahunData === tahunNow){
             if(d.tipe==="masuk") masuk += d.nominal;
             else keluar += d.nominal;
