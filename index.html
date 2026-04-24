@@ -26,15 +26,11 @@ body {
     border-radius:20px;
     padding:25px;
     color:white;
-    box-shadow:0 10px 40px rgba(0,0,0,0.3);
 }
 
-.header {
-    text-align:center;
-    margin-bottom:20px;
-}
+.header {text-align:center;margin-bottom:20px;}
 
-/* CARD BOX */
+/* BOX */
 .box {
     margin-bottom:20px;
     padding:15px;
@@ -42,16 +38,25 @@ body {
     background:rgba(255,255,255,0.15);
 }
 
-.box h3 {
-    margin-bottom:10px;
-    font-size:16px;
-}
+.box h3 {margin-bottom:10px;font-size:16px;}
 
 /* FORM */
 .form {
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
     gap:10px;
+    align-items:end;
+}
+
+.input-group {
+    display:flex;
+    flex-direction:column;
+}
+
+.input-group label {
+    font-size:12px;
+    margin-bottom:3px;
+    opacity:0.8;
 }
 
 input,select {
@@ -130,10 +135,21 @@ small {opacity:0.8;font-size:12px;}
 <div class="box">
 <h3>Filter & Pencarian</h3>
 <div class="form">
+
 <input type="text" id="search" placeholder="Cari keterangan...">
+
+<div class="input-group">
+<label>Mulai</label>
 <input type="date" id="dari">
+</div>
+
+<div class="input-group">
+<label>Sampai</label>
 <input type="date" id="sampai">
+</div>
+
 <button onclick="render()">Filter</button>
+
 </div>
 </div>
 
@@ -218,7 +234,12 @@ function render() {
         let cocokSearch = d.ket.toLowerCase().includes(search);
         let cocokTanggal = true;
 
-        if (dari && sampai) {
+        // FILTER FLEXIBLE
+        if (dari && !sampai) {
+            cocokTanggal = d.tanggal >= dari;
+        } else if (!dari && sampai) {
+            cocokTanggal = d.tanggal <= sampai;
+        } else if (dari && sampai) {
             cocokTanggal = d.tanggal >= dari && d.tanggal <= sampai;
         }
 
