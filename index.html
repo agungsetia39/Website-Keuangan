@@ -1,214 +1,18 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Keuangan Rumah Tangga</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
-
-<style>
-* {margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-
-body {
-    min-height:100vh;
-    background: linear-gradient(135deg,#667eea,#764ba2);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
-.container {
-    width:95%;
-    max-width:1000px;
-    background:rgba(255,255,255,0.1);
-    backdrop-filter:blur(15px);
-    border-radius:20px;
-    padding:25px;
-    color:white;
-}
-
-.header {text-align:center;margin-bottom:20px;}
-
-/* BOX */
-.box {
-    margin-bottom:20px;
-    padding:15px;
-    border-radius:15px;
-    background:rgba(255,255,255,0.15);
-}
-
-.box h3 {margin-bottom:10px;font-size:16px;}
-
-/* FORM */
-.form {
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-    gap:10px;
-    align-items:end;
-}
-
-.input-group {
-    display:flex;
-    flex-direction:column;
-}
-
-.input-group label {
-    font-size:12px;
-    margin-bottom:3px;
-    opacity:0.8;
-}
-
-/* 🔥 FIX UKURAN KOMPONEN */
-input, select, button {
-    height:42px;
-    padding:0 10px;
-    border-radius:10px;
-    border:none;
-    outline:none;
-}
-
-/* BUTTON */
-button {
-    background:#00c9a7;
-    color:white;
-    cursor:pointer;
-    width:auto;
-    padding:0 15px;
-}
-
-/* POSISI BUTTON */
-.form button {
-    justify-self:start;
-}
-
-/* HOVER */
-button:hover {
-    transform:scale(1.05);
-    background:#00b894;
-}
-
-/* TABLE */
-table {width:100%;border-collapse:collapse;}
-
-th {background:rgba(255,255,255,0.2);}
-th,td {padding:10px;text-align:center;}
-
-tr:hover {background:rgba(255,255,255,0.1);}
-
-.pemasukan {color:#00ffae;}
-.pengeluaran {color:#ff7675;}
-
-.summary {
-    display:flex;
-    gap:10px;
-    margin-top:20px;
-}
-
-.card {
-    flex:1;
-    padding:15px;
-    border-radius:15px;
-    text-align:center;
-}
-
-.masuk {background:rgba(0,255,150,0.2);}
-.keluar {background:rgba(255,0,0,0.2);}
-.saldo {background:rgba(0,150,255,0.2);}
-
-.delete-btn {background:red;}
-
-small {opacity:0.8;font-size:12px;}
-</style>
-</head>
-
-<body>
-
-<div class="container">
-
-<div class="header">
-<h1>Keuangan Rumah Tangga</h1>
-</div>
-
-<!-- ===== TAMBAH DATA ===== -->
-<div class="box">
-<h3>Tambah Data</h3>
-<div class="form">
-<input type="text" id="ket" placeholder="Keterangan">
-<select id="tipe">
-<option value="masuk">Pemasukan</option>
-<option value="keluar">Pengeluaran</option>
-</select>
-<input type="number" id="nominal" placeholder="Nominal">
-<input type="date" id="tanggal">
-<button onclick="tambah()">Tambah</button>
-</div>
-</div>
-
-<!-- ===== FILTER ===== -->
-<div class="box">
-<h3>Filter & Pencarian</h3>
-<div class="form">
-
-<input type="text" id="search" placeholder="Cari keterangan...">
-
-<div class="input-group">
-<label>Mulai</label>
-<input type="date" id="dari">
-</div>
-
-<div class="input-group">
-<label>Sampai</label>
-<input type="date" id="sampai">
-</div>
-
-<button onclick="render()">Filter</button>
-
-</div>
-</div>
-
-<!-- TABLE -->
-<table>
-<thead>
-<tr>
-<th>Keterangan</th>
-<th>Tipe</th>
-<th>Nominal</th>
-<th>Tanggal</th>
-<th>Aksi</th>
-</tr>
-</thead>
-<tbody id="tableData"></tbody>
-</table>
-
-<!-- SUMMARY -->
-<div class="summary">
-<div class="card masuk">
-<h3>Pemasukan</h3>
-<span id="masuk">0</span>
-</div>
-
-<div class="card keluar">
-<h3>Pengeluaran</h3>
-<span id="keluar">0</span><br>
-<small id="persenKeluar">0%</small>
-</div>
-
-<div class="card saldo">
-<h3>Saldo</h3>
-<span id="saldo">0</span>
-</div>
-</div>
-
-</div>
-
 <script>
-let data = [];
+// AMBIL DATA DARI LOCAL STORAGE
+let data = JSON.parse(localStorage.getItem("keuangan")) || [];
 
+// SIMPAN KE STORAGE
+function simpan() {
+    localStorage.setItem("keuangan", JSON.stringify(data));
+}
+
+// FORMAT RUPIAH
 function formatRupiah(angka) {
     return "Rp. " + angka.toLocaleString("id-ID");
 }
 
+// TAMBAH DATA
 function tambah() {
     let ket = document.getElementById("ket").value;
     let tipe = document.getElementById("tipe").value;
@@ -220,21 +24,30 @@ function tambah() {
         return;
     }
 
-    data.push({ ket, tipe, nominal: parseInt(nominal), tanggal });
+    data.push({
+        ket,
+        tipe,
+        nominal: parseInt(nominal),
+        tanggal
+    });
 
-    document.getElementById("ket").value = "";
-    document.getElementById("nominal").value = "";
-    document.getElementById("tanggal").value = "";
+    simpan(); // 🔥 penting
+
+    // reset input
+    ket.value = "";
+    nominal.value = "";
+    tanggal.value = "";
 
     render();
 }
 
+// RENDER + FILTER
 function render() {
     let table = document.getElementById("tableData");
     table.innerHTML = "";
 
-    let masuk = 0;
-    let keluar = 0;
+    let totalMasuk = 0;
+    let totalKeluar = 0;
 
     let search = document.getElementById("search").value.toLowerCase();
     let dari = document.getElementById("dari").value;
@@ -245,18 +58,14 @@ function render() {
         let cocokSearch = d.ket.toLowerCase().includes(search);
         let cocokTanggal = true;
 
-        if (dari && !sampai) {
-            cocokTanggal = d.tanggal >= dari;
-        } else if (!dari && sampai) {
-            cocokTanggal = d.tanggal <= sampai;
-        } else if (dari && sampai) {
-            cocokTanggal = d.tanggal >= dari && d.tanggal <= sampai;
-        }
+        if (dari && !sampai) cocokTanggal = d.tanggal >= dari;
+        else if (!dari && sampai) cocokTanggal = d.tanggal <= sampai;
+        else if (dari && sampai) cocokTanggal = d.tanggal >= dari && d.tanggal <= sampai;
 
         if (!cocokSearch || !cocokTanggal) return;
 
-        if (d.tipe === "masuk") masuk += d.nominal;
-        else keluar += d.nominal;
+        if (d.tipe === "masuk") totalMasuk += d.nominal;
+        else totalKeluar += d.nominal;
 
         table.innerHTML += `
         <tr>
@@ -268,23 +77,33 @@ function render() {
         </tr>`;
     });
 
-    document.getElementById("masuk").innerText = formatRupiah(masuk);
-    document.getElementById("keluar").innerText = formatRupiah(keluar);
-    document.getElementById("saldo").innerText = formatRupiah(masuk - keluar);
+    document.getElementById("masuk").innerText = formatRupiah(totalMasuk);
+    document.getElementById("keluar").innerText = formatRupiah(totalKeluar);
+    document.getElementById("saldo").innerText = formatRupiah(totalMasuk - totalKeluar);
 
-    let persenKeluar = masuk > 0 ? (keluar / masuk * 100).toFixed(1) : 0;
-    document.getElementById("persenKeluar").innerText = persenKeluar + "% dari pemasukan";
+    let persen = totalMasuk > 0 ? (totalKeluar / totalMasuk * 100).toFixed(1) : 0;
+    document.getElementById("persenKeluar").innerText = persen + "% dari pemasukan";
 }
 
-document.getElementById("search").addEventListener("keyup", render);
-
+// HAPUS DATA
 function hapus(i) {
     data.splice(i, 1);
+    simpan(); // 🔥 update storage
     render();
 }
 
+// RESET SEMUA DATA (OPSIONAL)
+function resetData() {
+    if (confirm("Yakin hapus semua data?")) {
+        localStorage.removeItem("keuangan");
+        data = [];
+        render();
+    }
+}
+
+// SEARCH REALTIME
+document.getElementById("search").addEventListener("keyup", render);
+
+// LOAD AWAL
 render();
 </script>
-
-</body>
-</html>
