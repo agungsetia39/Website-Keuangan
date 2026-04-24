@@ -59,19 +59,33 @@ body {
     opacity:0.8;
 }
 
-input,select {
-    padding:10px;
+/* 🔥 FIX UKURAN KOMPONEN */
+input, select, button {
+    height:42px;
+    padding:0 10px;
     border-radius:10px;
     border:none;
     outline:none;
 }
 
+/* BUTTON */
 button {
     background:#00c9a7;
-    border:none;
     color:white;
-    border-radius:10px;
     cursor:pointer;
+    width:auto;
+    padding:0 15px;
+}
+
+/* POSISI BUTTON */
+.form button {
+    justify-self:start;
+}
+
+/* HOVER */
+button:hover {
+    transform:scale(1.05);
+    background:#00b894;
 }
 
 /* TABLE */
@@ -191,12 +205,10 @@ small {opacity:0.8;font-size:12px;}
 <script>
 let data = [];
 
-// FORMAT RUPIAH
 function formatRupiah(angka) {
     return "Rp. " + angka.toLocaleString("id-ID");
 }
 
-// TAMBAH DATA
 function tambah() {
     let ket = document.getElementById("ket").value;
     let tipe = document.getElementById("tipe").value;
@@ -217,7 +229,6 @@ function tambah() {
     render();
 }
 
-// RENDER + FILTER
 function render() {
     let table = document.getElementById("tableData");
     table.innerHTML = "";
@@ -234,7 +245,6 @@ function render() {
         let cocokSearch = d.ket.toLowerCase().includes(search);
         let cocokTanggal = true;
 
-        // FILTER FLEXIBLE
         if (dari && !sampai) {
             cocokTanggal = d.tanggal >= dari;
         } else if (!dari && sampai) {
@@ -266,16 +276,13 @@ function render() {
     document.getElementById("persenKeluar").innerText = persenKeluar + "% dari pemasukan";
 }
 
-// SEARCH REALTIME
 document.getElementById("search").addEventListener("keyup", render);
 
-// HAPUS
 function hapus(i) {
     data.splice(i, 1);
     render();
 }
 
-// INIT
 render();
 </script>
 
