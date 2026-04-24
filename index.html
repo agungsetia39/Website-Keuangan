@@ -3,159 +3,173 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Keuangan App</title>
+<title>Keuangan Rumah Tangga</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+* {margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
 
-body{
+body {
     min-height:100vh;
-    background:linear-gradient(135deg,#667eea,#764ba2);
-    color:white;
-}
-
-.page{display:none;}
-.active{display:block;}
-
-.login{
-    height:100vh;
+    background: linear-gradient(135deg,#667eea,#764ba2);
     display:flex;
     justify-content:center;
     align-items:center;
 }
 
-.login-box{
-    background:white;
-    color:black;
-    padding:30px;
-    border-radius:15px;
-    text-align:center;
-    width:300px;
-}
-
-.container{
+.container {
+    width:95%;
     max-width:1000px;
-    margin:auto;
-    padding:20px;
-}
-
-.card{
     background:rgba(255,255,255,0.1);
-    padding:20px;
+    backdrop-filter:blur(15px);
     border-radius:20px;
-    text-align:center;
+    padding:25px;
+    color:white;
 }
 
-img{
-    width:120px;
-    height:120px;
-    border-radius:50%;
-    object-fit:cover;
-}
+.header {text-align:center;margin-bottom:20px;}
 
-.box{
+/* BOX */
+.box {
     margin-bottom:20px;
     padding:15px;
     border-radius:15px;
     background:rgba(255,255,255,0.15);
 }
 
-.form{
+.box h3 {margin-bottom:10px;font-size:16px;}
+
+/* FORM */
+.form {
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
     gap:10px;
     align-items:end;
 }
 
-input,select,button{
-    height:42px;
-    border:none;
-    border-radius:10px;
-    padding:0 10px;
+.input-group {
+    display:flex;
+    flex-direction:column;
 }
 
-button{
+.input-group label {
+    font-size:12px;
+    margin-bottom:3px;
+    opacity:0.8;
+}
+
+/* 🔥 FIX UKURAN KOMPONEN */
+input, select, button {
+    height:42px;
+    padding:0 10px;
+    border-radius:10px;
+    border:none;
+    outline:none;
+}
+
+/* BUTTON */
+button {
     background:#00c9a7;
     color:white;
     cursor:pointer;
+    width:auto;
+    padding:0 15px;
 }
 
-table{width:100%;border-collapse:collapse;}
-th,td{padding:10px;text-align:center;}
-th{background:rgba(255,255,255,0.2);}
+/* POSISI BUTTON */
+.form button {
+    justify-self:start;
+}
 
-.summary{display:flex;gap:10px;margin-top:20px;}
-.card2{flex:1;padding:10px;border-radius:10px;text-align:center;}
-.masuk{background:rgba(0,255,150,0.2);}
-.keluar{background:rgba(255,0,0,0.2);}
-.saldo{background:rgba(0,150,255,0.2);}
+/* HOVER */
+button:hover {
+    transform:scale(1.05);
+    background:#00b894;
+}
+
+/* TABLE */
+table {width:100%;border-collapse:collapse;}
+
+th {background:rgba(255,255,255,0.2);}
+th,td {padding:10px;text-align:center;}
+
+tr:hover {background:rgba(255,255,255,0.1);}
+
+.pemasukan {color:#00ffae;}
+.pengeluaran {color:#ff7675;}
+
+.summary {
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
+
+.card {
+    flex:1;
+    padding:15px;
+    border-radius:15px;
+    text-align:center;
+}
+
+.masuk {background:rgba(0,255,150,0.2);}
+.keluar {background:rgba(255,0,0,0.2);}
+.saldo {background:rgba(0,150,255,0.2);}
+
+.delete-btn {background:red;}
+
+small {opacity:0.8;font-size:12px;}
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<div id="loginPage" class="page login active">
-<div class="login-box">
-<h2>Login</h2>
-<input id="user" placeholder="Username">
-<input id="pass" type="password" placeholder="Password">
-<button onclick="login()">Login</button>
-</div>
-</div>
-
-<!-- DASHBOARD -->
-<div id="dashboardPage" class="page">
-<div class="container">
-<h1>Dashboard</h1>
-
-<div class="card">
-<img id="foto" src="https://i.imgur.com/6VBx3io.png">
-<br><br>
-<input type="file" onchange="gantiFoto(event)">
-<h3>Selamat datang</h3>
-<button onclick="showPage('keuanganPage')">Masuk Keuangan</button>
-<button onclick="logout()">Logout</button>
-</div>
-
-</div>
-</div>
-
-<!-- KEUANGAN -->
-<div id="keuanganPage" class="page">
 <div class="container">
 
-<button onclick="showPage('dashboardPage')">⬅ Kembali</button>
+<div class="header">
+<h1>Keuangan Rumah Tangga</h1>
+</div>
 
-<h2>Keuangan Rumah Tangga</h2>
-
+<!-- ===== TAMBAH DATA ===== -->
 <div class="box">
 <h3>Tambah Data</h3>
 <div class="form">
-<input id="ket" placeholder="Keterangan">
+<input type="text" id="ket" placeholder="Keterangan">
 <select id="tipe">
-<option value="masuk">Masuk</option>
-<option value="keluar">Keluar</option>
+<option value="masuk">Pemasukan</option>
+<option value="keluar">Pengeluaran</option>
 </select>
-<input id="nominal" type="number">
-<input id="tanggal" type="date">
+<input type="number" id="nominal" placeholder="Nominal">
+<input type="date" id="tanggal">
 <button onclick="tambah()">Tambah</button>
 </div>
 </div>
 
+<!-- ===== FILTER ===== -->
 <div class="box">
-<h3>Filter</h3>
+<h3>Filter & Pencarian</h3>
 <div class="form">
-<input id="search" placeholder="Cari...">
-<input id="dari" type="date">
-<input id="sampai" type="date">
+
+<input type="text" id="search" placeholder="Cari keterangan...">
+
+<div class="input-group">
+<label>Mulai</label>
+<input type="date" id="dari">
+</div>
+
+<div class="input-group">
+<label>Sampai</label>
+<input type="date" id="sampai">
+</div>
+
 <button onclick="render()">Filter</button>
+
 </div>
 </div>
 
+<!-- TABLE -->
 <table>
+<thead>
 <tr>
 <th>Keterangan</th>
 <th>Tipe</th>
@@ -163,107 +177,113 @@ th{background:rgba(255,255,255,0.2);}
 <th>Tanggal</th>
 <th>Aksi</th>
 </tr>
+</thead>
 <tbody id="tableData"></tbody>
 </table>
 
+<!-- SUMMARY -->
 <div class="summary">
-<div class="card2 masuk"><h3 id="masuk">0</h3></div>
-<div class="card2 keluar"><h3 id="keluar">0</h3></div>
-<div class="card2 saldo"><h3 id="saldo">0</h3></div>
+<div class="card masuk">
+<h3>Pemasukan</h3>
+<span id="masuk">0</span>
 </div>
 
+<div class="card keluar">
+<h3>Pengeluaran</h3>
+<span id="keluar">0</span><br>
+<small id="persenKeluar">0%</small>
 </div>
+
+<div class="card saldo">
+<h3>Saldo</h3>
+<span id="saldo">0</span>
+</div>
+</div>
+
 </div>
 
 <script>
-function showPage(id){
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+let data = [];
+
+function formatRupiah(angka) {
+    return "Rp. " + angka.toLocaleString("id-ID");
 }
 
-function login(){
-    if(user.value==="admin" && pass.value==="123"){
-        showPage('dashboardPage');
-    } else alert("Username / Password salah");
-}
+function tambah() {
+    let ket = document.getElementById("ket").value;
+    let tipe = document.getElementById("tipe").value;
+    let nominal = document.getElementById("nominal").value;
+    let tanggal = document.getElementById("tanggal").value;
 
-function logout(){
-    showPage('loginPage');
-}
-
-// FOTO
-function gantiFoto(e){
-    let reader=new FileReader();
-    reader.onload=()=>foto.src=reader.result;
-    reader.readAsDataURL(e.target.files[0]);
-}
-
-// DATA
-let data=[];
-
-function formatRupiah(a){return "Rp."+a.toLocaleString("id-ID");}
-
-function tambah(){
-    if(!ket.value || !nominal.value || !tanggal.value){
-        alert("Isi semua data!");
+    if (!ket || !nominal || !tanggal) {
+        alert("Lengkapi data!");
         return;
     }
 
-    data.push({
-        ket:ket.value,
-        tipe:tipe.value,
-        nominal:parseInt(nominal.value),
-        tanggal:tanggal.value
-    });
+    data.push({ ket, tipe, nominal: parseInt(nominal), tanggal });
 
-    ket.value=""; nominal.value=""; tanggal.value="";
+    document.getElementById("ket").value = "";
+    document.getElementById("nominal").value = "";
+    document.getElementById("tanggal").value = "";
+
     render();
 }
 
-function render(){
-    let masuk=0, keluar=0;
-    tableData.innerHTML="";
+function render() {
+    let table = document.getElementById("tableData");
+    table.innerHTML = "";
 
-    let s = search.value.toLowerCase();
-    let d1 = dari.value;
-    let d2 = sampai.value;
+    let masuk = 0;
+    let keluar = 0;
 
-    data.forEach((d,i)=>{
+    let search = document.getElementById("search").value.toLowerCase();
+    let dari = document.getElementById("dari").value;
+    let sampai = document.getElementById("sampai").value;
 
-        let cocokSearch = d.ket.toLowerCase().includes(s);
+    data.forEach((d, i) => {
+
+        let cocokSearch = d.ket.toLowerCase().includes(search);
         let cocokTanggal = true;
 
-        if(d1 && !d2) cocokTanggal = d.tanggal >= d1;
-        else if(!d1 && d2) cocokTanggal = d.tanggal <= d2;
-        else if(d1 && d2) cocokTanggal = d.tanggal >= d1 && d.tanggal <= d2;
+        if (dari && !sampai) {
+            cocokTanggal = d.tanggal >= dari;
+        } else if (!dari && sampai) {
+            cocokTanggal = d.tanggal <= sampai;
+        } else if (dari && sampai) {
+            cocokTanggal = d.tanggal >= dari && d.tanggal <= sampai;
+        }
 
-        if(!cocokSearch || !cocokTanggal) return;
+        if (!cocokSearch || !cocokTanggal) return;
 
-        if(d.tipe==="masuk") masuk+=d.nominal;
-        else keluar+=d.nominal;
+        if (d.tipe === "masuk") masuk += d.nominal;
+        else keluar += d.nominal;
 
-        tableData.innerHTML+=`
+        table.innerHTML += `
         <tr>
-        <td>${d.ket}</td>
-        <td>${d.tipe}</td>
-        <td>${formatRupiah(d.nominal)}</td>
-        <td>${d.tanggal}</td>
-        <td><button onclick="hapus(${i})">Hapus</button></td>
+            <td>${d.ket}</td>
+            <td class="${d.tipe === 'masuk' ? 'pemasukan' : 'pengeluaran'}">${d.tipe}</td>
+            <td>${formatRupiah(d.nominal)}</td>
+            <td>${d.tanggal}</td>
+            <td><button class="delete-btn" onclick="hapus(${i})">Hapus</button></td>
         </tr>`;
     });
 
-    masuk.innerText=formatRupiah(masuk);
-    keluar.innerText=formatRupiah(keluar);
-    saldo.innerText=formatRupiah(masuk-keluar);
+    document.getElementById("masuk").innerText = formatRupiah(masuk);
+    document.getElementById("keluar").innerText = formatRupiah(keluar);
+    document.getElementById("saldo").innerText = formatRupiah(masuk - keluar);
+
+    let persenKeluar = masuk > 0 ? (keluar / masuk * 100).toFixed(1) : 0;
+    document.getElementById("persenKeluar").innerText = persenKeluar + "% dari pemasukan";
 }
 
-function hapus(i){
-    data.splice(i,1);
+document.getElementById("search").addEventListener("keyup", render);
+
+function hapus(i) {
+    data.splice(i, 1);
     render();
 }
 
-// realtime search
-search.addEventListener("keyup", render);
+render();
 </script>
 
 </body>
