@@ -8,159 +8,130 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
 
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
+* {margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
 
 body {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    min-height:100vh;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
 
 .container {
-    width: 95%;
-    max-width: 1000px;
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(15px);
-    border-radius: 20px;
-    padding: 25px;
-    color: white;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    width:95%;
+    max-width:1000px;
+    background:rgba(255,255,255,0.1);
+    backdrop-filter:blur(15px);
+    border-radius:20px;
+    padding:25px;
+    color:white;
 }
 
-.header {
-    text-align: center;
-    margin-bottom: 20px;
-}
+.header {text-align:center;margin-bottom:20px;}
 
 .form {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
-    gap: 10px;
-    margin-bottom: 20px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:10px;
+    margin-bottom:15px;
 }
 
-input, select {
-    padding: 10px;
-    border-radius: 10px;
-    border: none;
-    outline: none;
+input,select {
+    padding:10px;
+    border-radius:10px;
+    border:none;
+    outline:none;
 }
 
 button {
-    background: #00c9a7;
-    border: none;
-    color: white;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.3s;
+    background:#00c9a7;
+    border:none;
+    color:white;
+    border-radius:10px;
+    cursor:pointer;
 }
 
-button:hover {
-    transform: scale(1.05);
-    background: #00b894;
-}
+table {width:100%;border-collapse:collapse;}
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
+th {background:rgba(255,255,255,0.2);}
+th,td {padding:10px;text-align:center;}
 
-th {
-    background: rgba(255,255,255,0.2);
-}
+tr:hover {background:rgba(255,255,255,0.1);}
 
-th, td {
-    padding: 10px;
-    text-align: center;
-}
+.pemasukan {color:#00ffae;}
+.pengeluaran {color:#ff7675;}
 
-tr:hover {
-    background: rgba(255,255,255,0.1);
-}
+.summary {display:flex;gap:10px;margin-top:20px;}
 
-.pemasukan { color: #00ffae; }
-.pengeluaran { color: #ff7675; }
+.card {flex:1;padding:15px;border-radius:15px;text-align:center;}
 
-.summary {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-}
+.masuk {background:rgba(0,255,150,0.2);}
+.keluar {background:rgba(255,0,0,0.2);}
+.saldo {background:rgba(0,150,255,0.2);}
 
-.card {
-    flex: 1;
-    padding: 15px;
-    border-radius: 15px;
-    text-align: center;
-}
-
-.masuk { background: rgba(0,255,150,0.2); }
-.keluar { background: rgba(255,0,0,0.2); }
-.saldo { background: rgba(0,150,255,0.2); }
-
-.delete-btn {
-    background: red;
-}
-small {
-    opacity: 0.8;
-    font-size: 12px;
-}
+.delete-btn {background:red;}
+small {opacity:0.8;font-size:12px;}
 </style>
 </head>
 
 <body>
 
 <div class="container">
-    <div class="header">
-        <h1>Keuangan Rumah Tangga</h1>
-    </div>
+<div class="header">
+<h1>Keuangan Rumah Tangga</h1>
+</div>
 
-    <div class="form">
-        <input type="text" id="ket" placeholder="Keterangan">
-        <select id="tipe">
-            <option value="masuk">Pemasukan</option>
-            <option value="keluar">Pengeluaran</option>
-        </select>
-        <input type="number" id="nominal" placeholder="Nominal">
-        <input type="date" id="tanggal">
-        <button onclick="tambah()">Tambah</button>
-    </div>
+<!-- FORM INPUT -->
+<div class="form">
+<input type="text" id="ket" placeholder="Keterangan">
+<select id="tipe">
+<option value="masuk">Pemasukan</option>
+<option value="keluar">Pengeluaran</option>
+</select>
+<input type="number" id="nominal" placeholder="Nominal">
+<input type="date" id="tanggal">
+<button onclick="tambah()">Tambah</button>
+</div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Keterangan</th>
-                <th>Tipe</th>
-                <th>Nominal</th>
-                <th>Tanggal</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody id="tableData"></tbody>
-    </table>
+<!-- FILTER + SEARCH -->
+<div class="form">
+<input type="text" id="search" placeholder="Cari keterangan...">
+<input type="date" id="dari">
+<input type="date" id="sampai">
+<button onclick="render()">Filter</button>
+</div>
 
-    <div class="summary">
-        <div class="card masuk">
-            <h3>Pemasukan</h3>
-            <span id="masuk">0</span>
-        </div>
-        <div class="card keluar">
-            <h3>Pengeluaran</h3>
-            <span id="keluar">0</span><br>
-            <small id="persenKeluar">0%</small>
-        </div>
-        <div class="card saldo">
-            <h3>Saldo</h3>
-            <span id="saldo">0</span>
-        </div>
-    </div>
+<table>
+<thead>
+<tr>
+<th>Keterangan</th>
+<th>Tipe</th>
+<th>Nominal</th>
+<th>Tanggal</th>
+<th>Aksi</th>
+</tr>
+</thead>
+<tbody id="tableData"></tbody>
+</table>
+
+<div class="summary">
+<div class="card masuk">
+<h3>Pemasukan</h3>
+<span id="masuk">0</span>
+</div>
+
+<div class="card keluar">
+<h3>Pengeluaran</h3>
+<span id="keluar">0</span><br>
+<small id="persenKeluar">0%</small>
+</div>
+
+<div class="card saldo">
+<h3>Saldo</h3>
+<span id="saldo">0</span>
+</div>
+</div>
 </div>
 
 <script>
@@ -198,7 +169,22 @@ function render() {
     let masuk = 0;
     let keluar = 0;
 
+    let search = document.getElementById("search").value.toLowerCase();
+    let dari = document.getElementById("dari").value;
+    let sampai = document.getElementById("sampai").value;
+
     data.forEach((d, i) => {
+
+        // FILTER LOGIC
+        let cocokSearch = d.ket.toLowerCase().includes(search);
+        let cocokTanggal = true;
+
+        if (dari && sampai) {
+            cocokTanggal = d.tanggal >= dari && d.tanggal <= sampai;
+        }
+
+        if (!cocokSearch || !cocokTanggal) return;
+
         if (d.tipe === "masuk") masuk += d.nominal;
         else keluar += d.nominal;
 
@@ -209,24 +195,26 @@ function render() {
             <td>${formatRupiah(d.nominal)}</td>
             <td>${d.tanggal}</td>
             <td><button class="delete-btn" onclick="hapus(${i})">Hapus</button></td>
-        </tr>
-        `;
+        </tr>`;
     });
 
-    // tampilkan total
     document.getElementById("masuk").innerText = formatRupiah(masuk);
     document.getElementById("keluar").innerText = formatRupiah(keluar);
     document.getElementById("saldo").innerText = formatRupiah(masuk - keluar);
 
-    // persen hanya pengeluaran
     let persenKeluar = masuk > 0 ? (keluar / masuk * 100).toFixed(1) : 0;
     document.getElementById("persenKeluar").innerText = persenKeluar + "% dari pemasukan";
 }
+
+// SEARCH REALTIME
+document.getElementById("search").addEventListener("keyup", render);
 
 function hapus(i) {
     data.splice(i, 1);
     render();
 }
+
+render();
 </script>
 
 </body>
