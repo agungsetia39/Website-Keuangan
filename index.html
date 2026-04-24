@@ -26,15 +26,32 @@ body {
     border-radius:20px;
     padding:25px;
     color:white;
+    box-shadow:0 10px 40px rgba(0,0,0,0.3);
 }
 
-.header {text-align:center;margin-bottom:20px;}
+.header {
+    text-align:center;
+    margin-bottom:20px;
+}
 
+/* CARD BOX */
+.box {
+    margin-bottom:20px;
+    padding:15px;
+    border-radius:15px;
+    background:rgba(255,255,255,0.15);
+}
+
+.box h3 {
+    margin-bottom:10px;
+    font-size:16px;
+}
+
+/* FORM */
 .form {
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
     gap:10px;
-    margin-bottom:15px;
 }
 
 input,select {
@@ -52,6 +69,7 @@ button {
     cursor:pointer;
 }
 
+/* TABLE */
 table {width:100%;border-collapse:collapse;}
 
 th {background:rgba(255,255,255,0.2);}
@@ -62,15 +80,25 @@ tr:hover {background:rgba(255,255,255,0.1);}
 .pemasukan {color:#00ffae;}
 .pengeluaran {color:#ff7675;}
 
-.summary {display:flex;gap:10px;margin-top:20px;}
+.summary {
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
 
-.card {flex:1;padding:15px;border-radius:15px;text-align:center;}
+.card {
+    flex:1;
+    padding:15px;
+    border-radius:15px;
+    text-align:center;
+}
 
 .masuk {background:rgba(0,255,150,0.2);}
 .keluar {background:rgba(255,0,0,0.2);}
 .saldo {background:rgba(0,150,255,0.2);}
 
 .delete-btn {background:red;}
+
 small {opacity:0.8;font-size:12px;}
 </style>
 </head>
@@ -78,11 +106,14 @@ small {opacity:0.8;font-size:12px;}
 <body>
 
 <div class="container">
+
 <div class="header">
 <h1>Keuangan Rumah Tangga</h1>
 </div>
 
-<!-- FORM INPUT -->
+<!-- ===== TAMBAH DATA ===== -->
+<div class="box">
+<h3>Tambah Data</h3>
 <div class="form">
 <input type="text" id="ket" placeholder="Keterangan">
 <select id="tipe">
@@ -93,15 +124,20 @@ small {opacity:0.8;font-size:12px;}
 <input type="date" id="tanggal">
 <button onclick="tambah()">Tambah</button>
 </div>
+</div>
 
-<!-- FILTER + SEARCH -->
+<!-- ===== FILTER ===== -->
+<div class="box">
+<h3>Filter & Pencarian</h3>
 <div class="form">
 <input type="text" id="search" placeholder="Cari keterangan...">
 <input type="date" id="dari">
 <input type="date" id="sampai">
 <button onclick="render()">Filter</button>
 </div>
+</div>
 
+<!-- TABLE -->
 <table>
 <thead>
 <tr>
@@ -115,6 +151,7 @@ small {opacity:0.8;font-size:12px;}
 <tbody id="tableData"></tbody>
 </table>
 
+<!-- SUMMARY -->
 <div class="summary">
 <div class="card masuk">
 <h3>Pemasukan</h3>
@@ -132,6 +169,7 @@ small {opacity:0.8;font-size:12px;}
 <span id="saldo">0</span>
 </div>
 </div>
+
 </div>
 
 <script>
@@ -142,6 +180,7 @@ function formatRupiah(angka) {
     return "Rp. " + angka.toLocaleString("id-ID");
 }
 
+// TAMBAH DATA
 function tambah() {
     let ket = document.getElementById("ket").value;
     let tipe = document.getElementById("tipe").value;
@@ -162,6 +201,7 @@ function tambah() {
     render();
 }
 
+// RENDER + FILTER
 function render() {
     let table = document.getElementById("tableData");
     table.innerHTML = "";
@@ -175,7 +215,6 @@ function render() {
 
     data.forEach((d, i) => {
 
-        // FILTER LOGIC
         let cocokSearch = d.ket.toLowerCase().includes(search);
         let cocokTanggal = true;
 
@@ -209,11 +248,13 @@ function render() {
 // SEARCH REALTIME
 document.getElementById("search").addEventListener("keyup", render);
 
+// HAPUS
 function hapus(i) {
     data.splice(i, 1);
     render();
 }
 
+// INIT
 render();
 </script>
 
